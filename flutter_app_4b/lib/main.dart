@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// switch-case
 void main() {
   runApp(MyApp());
 }
@@ -23,17 +24,18 @@ class LayoutPracticum extends StatefulWidget {
 }
 
 class _LayoutPracticumState extends State<LayoutPracticum> {
-  int score = 0;
+  int selectedIndex = 1;
 
-  String getScoreCategory() {
-    if (score >= 90) {
-      return 'A';
-    } else if (score >= 75) {
-      return 'B';
-    } else if (score >= 60) {
-      return 'C';
-    } else {
-      return 'D';
+  String getMessage(int index){
+    switch(index){
+      case 1:
+      return "ini adalah pesan pertama";
+      case 2:
+      return "ini adalah pesan kedua";
+      case 3:
+      return "ini adalah pesan ketiga";
+      default: 
+      return "pilihan tidak valid";
     }
   }
 
@@ -41,37 +43,30 @@ class _LayoutPracticumState extends State<LayoutPracticum> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter Layout with if-else Statement'),
+        title: Text('Flutter Layout with swirch-case'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             Text(
-              'Masukkan Nilai:',
+              getMessage(selectedIndex),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
-            Slider(
-              value: score.toDouble(),
-              min: 0,
-              max: 100,
-              divisions: 100,
-              label: score.toString(),
-              onChanged: (double value) {
+            SizedBox(height: 20),
+            DropdownButton<int>(
+              value: selectedIndex,
+              items: [
+                DropdownMenuItem(value: 1, child: Text("Pilihan 1")),
+                DropdownMenuItem(value: 2, child: Text("Pilihan 2")),
+                DropdownMenuItem(value: 3, child: Text("Pilihan 3")),
+              ],
+              onChanged: (value){
                 setState(() {
-                  score = value.toInt();
+                  selectedIndex = value ?? 1;
                 });
               },
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Kategori Nilai: ${getScoreCategory()}',
-              style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue),
-            ),
+            )
           ],
         ),
       ),
