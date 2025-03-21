@@ -1,76 +1,110 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; // Mengimpor pustaka Flutter untuk membangun UI.
+import 'car_page.dart'; // Mengimpor halaman car_page.dart.
+import 'transit_page.dart'; // Mengimpor halaman transit_page.dart.
+import 'profile_page.dart'; // Mengimpor halaman profile_page.dart.
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(const MyApp()); // Fungsi utama untuk menjalankan aplikasi.
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget { // Kelas utama aplikasi menggunakan StatelessWidget.
+  const MyApp({super.key}); // Konstruktor dengan key opsional.
+
+  static const appTitle = 'Drawer & Tabs Demo'; // Judul aplikasi.
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Layout Practicum',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LayoutPracticum(),
+  Widget build(BuildContext context) { // Membangun UI aplikasi.
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false, // Menghilangkan label "debug" di pojok kanan atas.
+      title: appTitle, // Mengatur judul aplikasi.
+      home: MyHomePage(title: appTitle), // Menetapkan halaman utama.
     );
   }
 }
 
-class LayoutPracticum extends StatefulWidget {
+class MyHomePage extends StatefulWidget { // Kelas halaman utama sebagai StatefulWidget.
+  const MyHomePage({super.key, required this.title}); // Konstruktor dengan key dan title.
+
+  final String title; // Variabel untuk menyimpan judul halaman.
+
   @override
-  _LayoutPracticumState createState() => _LayoutPracticumState();
+  State<MyHomePage> createState() => _MyHomePageState(); // Membuat state untuk halaman utama.
 }
 
-class _LayoutPracticumState extends State<LayoutPracticum> {
-  int score = 0;
+// Kelas _MyHomePageState yang merupakan state dari MyHomePage
+// Menerapkan SingleTickerProviderStateMixin untuk animasi TabController
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+  late TabController _tabController; // Controller untuk TabBar
 
-  String getScoreCategory() {
-    if (score >= 90) {
-      return 'A';
-    } else if (score >= 75) {
-      return 'B';
-    } else if (score >= 60) {
-      return 'C';
-    } else {
-      return 'D';
-    }
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this); // Inisialisasi TabController dengan 3 tab
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose(); // Membersihkan TabController saat widget dihapus untuk mencegah kebocoran memori
+    super.dispose();
+  }
+
+  // Fungsi untuk menangani perpindahan tab dari Drawer
+  void _onItemTapped(int index) {
+    setState(() {
+      _tabController.index = index; // Mengubah tab yang aktif berdasarkan indeks yang dipilih
+    });
+    Navigator.pop(context); // Menutup drawer setelah navigasi
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter Layout with if-else Statement'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Text(
-              'Masukkan Nilai:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Slider(
-              value: score.toDouble(),
-              min: 0,
-              max: 100,
-              divisions: 100,
-              label: score.toString(),
-              onChanged: (double value) {
-                setState(() {
-                  score = value.toInt();
-                });
+        title: Text(widget.title), // Menampilkan judul halaman di AppBar
+        leading: Builder( // Tombol menu untuk membuka drawer
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.menu), // Ikon menu
+              onPressed: () {
+                Scaffold.of(context).openDrawer(); // Membuka drawer saat tombol ditekan
               },
+            );
+          },
+        ),
+        bottom: TabBar( // Menambahkan TabBar di bawah AppBar
+          controller: _tabController, // Menghubungkan TabBar dengan TabController
+          tabs: const [
+            Tab(icon: Icon(Icons.directions_car), text: "Mobil"), // Tab pertama (Mobil)
+            Tab(icon: Icon(Icons.attach_money), text: "Transaksi"), // Tab kedua (Transaksi)
+            Tab(icon: Icon(Icons.person), text: "Profile"), // Tab ketiga (Profile)
+          ],
+        ),
+      ),
+      body: TabBarView( // Menampilkan konten yang sesuai dengan tab yang dipilih
+        controller: _tabController, // Menghubungkan dengan TabController
+        children: const [
+          CarPage(), // Halaman untuk tab "Mobil"
+          TransitPage(), // Halaman untuk tab "Transaksi"
+          ProfilePage(), // Halaman untuk tab "Profile"
+        ],
+      ),
+      drawer: Drawer( // Drawer navigasi di sisi kiri layar
+        child: ListView( // Menggunakan ListView untuk daftar menu dalam drawer
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader( // Bagian header dalam drawer
+              decoration: BoxDecoration(color: Colors.blue), // Warna latar belakang header
+              child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 24)), // Judul dalam header
             ),
-            SizedBox(height: 20),
-            Text(
-              'Kategori Nilai: ${getScoreCategory()}',
-              style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue),
+            ListTile( // Opsi menu untuk tab "Mobil"
+              title: const Text('Mobil'), // Label menu
+              onTap: () => _onItemTapped(0), // Navigasi ke tab "Mobil" saat diklik
+            ),
+            ListTile( // Opsi menu untuk tab "Transaksi"
+              title: const Text('Transaksi'), // Label menu
+              onTap: () => _onItemTapped(1), // Navigasi ke tab "Transaksi" saat diklik
+            ),
+            ListTile( // Opsi menu untuk tab "Profile"
+              title: const Text('Profile'), // Label menu
+              onTap: () => _onItemTapped(2), // Navigasi ke tab "Profile" saat diklik
             ),
           ],
         ),

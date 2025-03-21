@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "960227420038",
+    "project_id": "regisloginfirebase-ee438",
+    "storage_bucket": "regisloginfirebase-ee438.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960227420038:android:a2b754e797b777ef766e07",
+        "android_client_info": {
+          "package_name": "com.example.regislogin_firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkwrq8WN4hrnc1PNRC-6nDbjwsj9ad7Bw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
